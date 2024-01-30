@@ -12,7 +12,8 @@ export default function TranslateSwitch() {
   LanguageCodeHandler.subscribe(setLangVal);
   LanguageCodeHandler.subscribeLoading(setLoading);
   return (
-    <div className="skipTranslate">
+    <div className="skipTranslate h-8 inline-flex justify-start items-center w-full">
+      <span>翻譯：</span>
       <Switch
         checked={langVal === ETranslateToLanguage[ELangs.enUS]}
         onCheckedChange={(value) => {
