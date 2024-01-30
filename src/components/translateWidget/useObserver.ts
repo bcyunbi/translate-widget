@@ -44,14 +44,17 @@ export function useObserver(options: DropdownOptions) {
   const handleElementIntersection = (entries: IntersectionObserverEntry[]) => {
     const entriesMap = new Map(
       entries.map((entry) => {
-        console.log("entry.target", entry.target);
         let isIntersecting = entry.isIntersecting;
-        const parentElement = entry.target.parentElement;
 
+        const parentElement = entry.target.parentElement;
+        // isSonnerChildren: handel data-sonner-toast issue
+        const isSonnerChildren =
+          parentElement?.getAttribute("data-sonner-toast") !== null ||
+          parentElement.parentElement?.getAttribute("data-sonner-toast") !==
+            null;
         if (!entry.isIntersecting && parentElement) {
-          if (parentElement?.style.position === "fixed") {
+          if (parentElement?.style.position === "fixed" || isSonnerChildren)
             isIntersecting = true;
-          }
         }
         return [entry.target, isIntersecting];
       })
@@ -205,18 +208,6 @@ export function useObserver(options: DropdownOptions) {
                       // add to intersection observer
                       if (ancestor)
                         intersectionObserver.current.observe(ancestor);
-                      // console.log("child", {
-                      //   originalText: originalText,
-                      //   currentLanguage: options.pageLanguage,
-                      //   translatedText: {
-                      //     [options.pageLanguage]: originalText,
-                      //   },
-                      //   translationStatus: nativeStatus,
-                      //   node: child,
-                      //   isIntersecting: false,
-                      //   nearestVisibleAncestor: ancestor,
-                      //   attribute: "_text_",
-                      // });
                       result.push({
                         originalText: originalText,
                         currentLanguage: options.pageLanguage,
@@ -482,16 +473,6 @@ export function useObserver(options: DropdownOptions) {
             // add to intersection observer
             if (ancestor) intersectionObserver.current.observe(ancestor);
 
-            console.log("結果不是這", {
-              originalText: originalText,
-              currentLanguage: options.pageLanguage,
-              translatedText: nativeLang,
-              translationStatus: nativeStatus,
-              node,
-              isIntersecting: false,
-              nearestVisibleAncestor: ancestor,
-              attribute: "_text_",
-            });
             setTranslatedNodes((prevList) => [
               ...prevList,
               {
