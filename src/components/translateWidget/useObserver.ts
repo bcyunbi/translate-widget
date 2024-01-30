@@ -34,7 +34,6 @@ export function useObserver(options: DropdownOptions) {
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE_CODE);
 
   useEffect(() => {
-    console.log("document", document);
     LanguageCodeHandler.subscribe(setLanguage);
   }, []);
 
@@ -59,7 +58,6 @@ export function useObserver(options: DropdownOptions) {
         return [entry.target, isIntersecting];
       })
     );
-    // console.log("entriesMap", entriesMap);
     setTranslatedNodes((previous) => {
       const result = previous.slice();
       // for all items
@@ -97,7 +95,6 @@ export function useObserver(options: DropdownOptions) {
    */
   const handleDocumentMutation: MutationCallback = (mutations) => {
     // wrap in this so we don't have race conditions
-    // console.log("handleDocumentMutation", mutations);
     setTranslatedNodes((previous) => {
       const result = previous.slice();
       for (let mutation of mutations) {
@@ -220,7 +217,6 @@ export function useObserver(options: DropdownOptions) {
                         nearestVisibleAncestor: ancestor,
                         attribute: "_text_",
                       });
-                      console.log("result", result);
                     }
                   }
                 } else if (
@@ -267,7 +263,6 @@ export function useObserver(options: DropdownOptions) {
               }
             }
           }
-          console.log("result", result);
           // Remove the removed nodes from translatedNodes
           for (let i = 0; i < mutation.removedNodes.length; i++) {
             // use this as a shorthand
@@ -524,7 +519,6 @@ export function useObserver(options: DropdownOptions) {
       // check that the language isn't set to the "Select Language" dropdown
       if (language !== "") {
         (async () => {
-          console.log("translatedNodes", translatedNodes, language);
           // filter translatedNodes to get a list of nodes that aren't translated to the current language, AND that are visible in the viewport currently
           const needsTranslating = translatedNodes.filter(
             (e) =>
@@ -534,7 +528,6 @@ export function useObserver(options: DropdownOptions) {
                   TranslationStatus.NotTranslated) &&
               (options.ignoreIntersection === true || e.isIntersecting === true)
           );
-          console.log("needsTranslating", needsTranslating);
           if (needsTranslating.length > 0) {
             // we're about to do a bunch of stuff, let's put up a loading spinner
             setIsLoading(true);
@@ -573,7 +566,6 @@ export function useObserver(options: DropdownOptions) {
                 options.pageLanguage,
                 language
               );
-              console.log("apiText", apiText);
 
               setTranslatedNodes((previous) => {
                 const results = previous.slice();
@@ -671,7 +663,6 @@ export function useObserver(options: DropdownOptions) {
 
   // whenever a new language option is selected
   const handleChange = async (languageCode: string) => {
-    console.log("handleChange");
     LanguageCodeHandler.changeLanguage(languageCode);
     localStorage.setItem(translateLanguageCodeKey, languageCode);
     await updateDocumentTitle(languageCode);
